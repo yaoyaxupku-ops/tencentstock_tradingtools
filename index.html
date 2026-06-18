@@ -1,0 +1,1696 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>微证券交易工具商业化 Demo</title>
+  <style>
+    :root {
+      --red: #e9303a;
+      --green: #16a85a;
+      --blue: #2d7ff9;
+      --text: #202938;
+      --muted: #6f7888;
+      --line: #edf0f5;
+      --bg: #f4f6fa;
+      --card: #ffffff;
+      --soft-red: #fff1f2;
+      --soft-blue: #eef5ff;
+      --shadow: 0 18px 45px rgba(25, 35, 55, .14);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background: linear-gradient(135deg, #f7f8fb 0%, #eef2f7 100%);
+    }
+
+    .page {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: minmax(420px, 460px) minmax(280px, 360px);
+      gap: 34px;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+    }
+
+    .phone-shell {
+      width: 412px;
+      height: 884px;
+      border-radius: 42px;
+      padding: 14px;
+      background: #111722;
+      box-shadow: var(--shadow);
+    }
+
+    .phone {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      border-radius: 31px;
+      background: var(--bg);
+    }
+
+    .status {
+      height: 38px;
+      padding: 10px 20px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #101623;
+      font-size: 15px;
+      font-weight: 700;
+      background: #fff;
+    }
+
+    .screen {
+      position: absolute;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      background: var(--bg);
+    }
+
+    .screen.active { display: flex; }
+
+    .appbar {
+      height: 72px;
+      padding: 8px 16px 12px;
+      display: grid;
+      grid-template-columns: 38px 1fr 70px;
+      align-items: center;
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .back, .more, .icon-btn {
+      border: 0;
+      background: transparent;
+      color: #182131;
+      font-size: 25px;
+      cursor: pointer;
+    }
+
+    .title {
+      text-align: center;
+      line-height: 1.2;
+      font-weight: 800;
+      font-size: 20px;
+    }
+
+    .subtitle {
+      margin-top: 4px;
+      color: var(--red);
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .content {
+      flex: 1;
+      overflow: auto;
+      padding: 12px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+      border: 1px solid rgba(230, 234, 242, .8);
+    }
+
+    .quote-card {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .quote-main {
+      color: var(--red);
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .quote-sub {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .donut {
+      display: grid;
+      grid-template-columns: 54px 1fr;
+      gap: 12px;
+      align-items: center;
+      justify-self: end;
+    }
+
+    .donut-graph {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: conic-gradient(#ef6972 0 43%, #4dbb72 43% 100%);
+      position: relative;
+    }
+
+    .donut-graph::after {
+      content: "";
+      position: absolute;
+      inset: 14px;
+      border-radius: 50%;
+      background: #fff;
+    }
+
+    .legend {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      background: #fff;
+      border-radius: 12px 12px 0 0;
+      padding: 12px 10px 0;
+      font-size: 17px;
+      color: #313b4b;
+    }
+
+    .tab {
+      text-align: center;
+      padding-bottom: 12px;
+      position: relative;
+    }
+
+    .tab.active {
+      font-weight: 800;
+    }
+
+    .tab.active::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 2px;
+      width: 24px;
+      height: 4px;
+      border-radius: 4px;
+      transform: translateX(-50%);
+      background: var(--red);
+    }
+
+    .fund-module {
+      background: #f6f8fc;
+      border-radius: 10px;
+      padding: 14px;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .module-title {
+      margin-bottom: 8px;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .range-tabs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin: 12px 0;
+    }
+
+    .range-tabs span {
+      padding: 9px 0;
+      text-align: center;
+      border-radius: 8px;
+      background: #fff;
+      color: #4a5361;
+    }
+
+    .range-tabs .active {
+      background: #fff0f1;
+      color: var(--red);
+      font-weight: 700;
+    }
+
+    .mini-chart {
+      height: 160px;
+      position: relative;
+      background:
+        linear-gradient(#eef1f6 1px, transparent 1px) 0 26px / 100% 52px,
+        linear-gradient(90deg, #eef1f6 1px, transparent 1px) 50% 0 / 50% 100%;
+      overflow: hidden;
+      border-radius: 4px;
+    }
+
+    .mini-chart svg, .k-chart svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .link-row {
+      margin-top: 10px;
+      color: var(--blue);
+      font-size: 15px;
+      font-weight: 650;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border: 0;
+      background: transparent;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .bottom-bar {
+      height: 70px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr) 1.2fr 1.2fr;
+      gap: 6px;
+      padding: 8px 10px 12px;
+      align-items: center;
+      background: #fff;
+      border-top: 1px solid var(--line);
+    }
+
+    .bar-item {
+      text-align: center;
+      color: #232b39;
+      font-size: 12px;
+    }
+
+    .bar-item strong {
+      display: block;
+      font-size: 20px;
+      line-height: 1;
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
+
+    .trade-btn {
+      border: 0;
+      border-radius: 7px;
+      height: 46px;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .buy { background: var(--red); }
+    .sell { background: var(--green); }
+
+    .detail-head {
+      background: #fff;
+      padding: 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .pill-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .pill-tabs span {
+      padding: 9px 14px;
+      border-radius: 7px;
+      background: #f2f4f8;
+      color: #566174;
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    .pill-tabs .active {
+      background: #eaf3ff;
+      color: var(--blue);
+    }
+
+    .detail-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .detail-title {
+      font-size: 21px;
+      font-weight: 800;
+    }
+
+    .info-icon {
+      width: 21px;
+      height: 21px;
+      display: inline-grid;
+      place-items: center;
+      border: 1px solid #b7c0ce;
+      border-radius: 50%;
+      color: #8a94a5;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .detail-link {
+      color: var(--blue);
+      border: 0;
+      background: transparent;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .big-number {
+      color: var(--red);
+      font-size: 32px;
+      font-weight: 800;
+      margin: 8px 0 12px;
+    }
+
+    .flow-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .bar-list {
+      padding: 8px 16px 0;
+      font-size: 14px;
+    }
+
+    .bar-line {
+      display: grid;
+      grid-template-columns: 72px 78px 1fr;
+      gap: 8px;
+      align-items: center;
+      margin: 12px 0;
+    }
+
+    .bar-fill {
+      height: 14px;
+      border-radius: 2px;
+      background: var(--red);
+    }
+
+    .bar-fill.green { background: var(--green); }
+
+    .kline-wrap {
+      flex: 1;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+    }
+
+    .notice {
+      height: 42px;
+      padding: 10px 14px;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #4a5361;
+      font-size: 14px;
+      background: #fff;
+    }
+
+    .k-chart-area {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 1fr 118px;
+      background: #fff;
+    }
+
+    .k-left {
+      position: relative;
+      overflow: hidden;
+      border-right: 1px solid var(--line);
+    }
+
+    .k-chart {
+      height: 360px;
+      background:
+        linear-gradient(#eef1f6 1px, transparent 1px) 0 44px / 100% 92px,
+        linear-gradient(90deg, #eef1f6 1px, transparent 1px) 50% 0 / 50% 100%;
+    }
+
+    .ma-line {
+      position: absolute;
+      left: 8px;
+      top: 8px;
+      color: #5b6474;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .signal-tag {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      border-radius: 7px;
+      font-size: 14px;
+      font-weight: 800;
+      background: #ffe9eb;
+      color: var(--red);
+      border: 1px solid #ffb9bf;
+      box-shadow: 0 2px 8px rgba(233, 48, 58, .16);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+    }
+
+    .signal-tag.weak {
+      background: #ecfbf3;
+      color: var(--green);
+      border-color: #a9e8c5;
+    }
+
+    .signal-pop {
+      position: absolute;
+      left: 22px;
+      right: 16px;
+      bottom: 126px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, .96);
+      border: 1px solid #ffd3d7;
+      box-shadow: 0 10px 25px rgba(20, 29, 45, .12);
+      font-size: 13px;
+      line-height: 1.5;
+      display: none;
+      z-index: 5;
+    }
+
+    .signal-pop.show { display: block; }
+
+    .signal-pop strong { color: var(--red); }
+
+    .sub-indicator {
+      height: 114px;
+      padding: 10px 8px;
+      border-top: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .indicator-title {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #4a5361;
+      font-size: 13px;
+    }
+
+    .indicator-title span:first-child {
+      padding: 5px 8px;
+      background: #f4f6fa;
+      border-radius: 5px;
+      color: #303a49;
+      font-weight: 700;
+    }
+
+    .volume-bars {
+      height: 70px;
+      margin-top: 8px;
+      display: flex;
+      align-items: end;
+      gap: 4px;
+    }
+
+    .volume-bars i {
+      flex: 1;
+      display: block;
+      border-radius: 1px 1px 0 0;
+      background: var(--red);
+      opacity: .86;
+    }
+
+    .volume-bars i:nth-child(2n) { background: var(--green); }
+    .volume-bars i:nth-child(3n) { height: 38%; }
+    .volume-bars i:nth-child(4n) { height: 72%; }
+    .volume-bars i:nth-child(5n) { height: 52%; }
+
+    .chip-panel {
+      position: relative;
+      padding: 0;
+      background: #fbfcff;
+      height: 474px;
+      border-left: 1px solid var(--line);
+      display: grid;
+      grid-template-rows: 360px 114px;
+    }
+
+    .chip-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+      margin-bottom: 7px;
+    }
+
+    .chip-tabs button {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 6px;
+      padding: 7px 0;
+      color: #4d5666;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .chip-tabs button.active {
+      color: var(--red);
+      border-color: #ffc9ce;
+      background: #fff1f2;
+      font-weight: 800;
+    }
+
+    .chip-graph {
+      height: 360px;
+      position: relative;
+      overflow: hidden;
+      background: #fff;
+      border-bottom: 1px solid #f0f2f6;
+    }
+
+    .chip-bar {
+      position: absolute;
+      left: 0;
+      height: 8px;
+      border-radius: 0 8px 8px 0;
+      background: #f3a1a8;
+      opacity: .78;
+    }
+
+    .chip-bar.blue { background: #a9c9fb; }
+    .chip-bar.main-red { background: #df2633; opacity: .95; }
+    .chip-bar.main-blue { background: #2c7bdc; opacity: .9; }
+
+    .chip-graph.main-mode .chip-bar {
+      background: #f6c1c7;
+      opacity: .28;
+    }
+
+    .chip-graph.main-mode .chip-bar.blue {
+      background: #bfd7fb;
+      opacity: .28;
+    }
+
+    .chip-graph.main-mode .chip-bar:nth-child(3),
+    .chip-graph.main-mode .chip-bar:nth-child(4),
+    .chip-graph.main-mode .chip-bar:nth-child(7) {
+      background: #df2633;
+      opacity: .96;
+    }
+
+    .chip-graph.main-mode .chip-bar:nth-child(1),
+    .chip-graph.main-mode .chip-bar:nth-child(10) {
+      background: #2c7bdc;
+      opacity: .9;
+    }
+
+    .cost-marker {
+      position: absolute;
+      left: 6px;
+      right: 6px;
+      top: 164px;
+      border-top: 1px dashed #f1b33b;
+      display: none;
+    }
+
+    .cost-marker span {
+      position: absolute;
+      right: 0;
+      top: -12px;
+      padding: 2px 5px;
+      border-radius: 4px;
+      background: #fff4d8;
+      color: #b26a00;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .cost-marker.show { display: block; }
+
+    .chip-paywall {
+      position: absolute;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 10px;
+      background: rgba(255, 255, 255, .76);
+      backdrop-filter: blur(2px);
+      text-align: center;
+      padding: 12px;
+    }
+
+    .chip-paywall.show { display: flex; }
+
+    .primary-btn {
+      border: 0;
+      min-height: 42px;
+      border-radius: 22px;
+      background: var(--red);
+      color: #fff;
+      padding: 0 22px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .ghost-btn {
+      border: 1px solid #dbe1eb;
+      min-height: 38px;
+      border-radius: 20px;
+      background: #fff;
+      color: #4b5566;
+      padding: 0 18px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .chip-data {
+      font-size: 12px;
+      color: #4c5667;
+      line-height: 1.55;
+      padding: 0 4px;
+    }
+
+    .chip-data strong { color: var(--red); }
+
+    .chip-data .muted-lock {
+      color: #a6afbd;
+      letter-spacing: 2px;
+      font-weight: 800;
+    }
+
+    .chip-meta {
+      padding: 7px 6px 8px;
+      background: #fbfcff;
+      position: relative;
+    }
+
+    .k-tabs {
+      height: 52px;
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      align-items: center;
+      border-top: 1px solid var(--line);
+      background: #fff;
+      color: #4b5566;
+      font-size: 15px;
+      text-align: center;
+    }
+
+    .k-tabs .active {
+      font-weight: 800;
+      color: #232b39;
+      background: #f4f6fa;
+      padding: 9px 0;
+      border-radius: 8px;
+    }
+
+    .settings-btn {
+      border: 0;
+      background: transparent;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .sheet-backdrop {
+      position: absolute;
+      inset: 0;
+      z-index: 20;
+      background: rgba(15, 23, 42, .18);
+      display: none;
+      align-items: end;
+    }
+
+    .sheet-backdrop.show { display: flex; }
+
+    .sheet {
+      width: 100%;
+      max-height: 62%;
+      background: #fff;
+      border-radius: 20px 20px 0 0;
+      padding: 18px 14px 22px;
+      box-shadow: 0 -12px 28px rgba(20, 29, 45, .12);
+      overflow: auto;
+    }
+
+    .sheet-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .sheet-tabs {
+      display: flex;
+      gap: 28px;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .sheet-tabs span {
+      position: relative;
+      padding-bottom: 10px;
+      color: #4b5566;
+    }
+
+    .sheet-tabs .active {
+      color: #202938;
+    }
+
+    .sheet-tabs .active::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      width: 24px;
+      height: 4px;
+      transform: translateX(-50%);
+      background: var(--red);
+      border-radius: 4px;
+    }
+
+    .tool-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .tool-card {
+      min-height: 70px;
+      border: 1px solid var(--line);
+      background: #f7f9fc;
+      border-radius: 9px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: #3d4655;
+      font-weight: 700;
+      cursor: pointer;
+      position: relative;
+      padding: 8px 4px;
+    }
+
+    .tool-card.active {
+      border-color: #ffd0d4;
+      background: #fff0f1;
+      color: var(--red);
+    }
+
+    .tool-card.signal-tool {
+      background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+      border-color: #dce7f8;
+    }
+
+    .tool-card.signal-tool.active {
+      background: #fff0f1;
+      border-color: #ffc7cd;
+      color: var(--red);
+    }
+
+    .tool-card small {
+      display: block;
+      margin-top: 3px;
+      color: #8d96a6;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .tool-icon {
+      display: block;
+      font-size: 20px;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .paid-badge {
+      position: absolute;
+      right: 5px;
+      top: 5px;
+      padding: 1px 4px;
+      border-radius: 8px;
+      background: #eef5ff;
+      color: #2d7ff9;
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .paid-badge.open {
+      background: #fff1f2;
+      color: var(--red);
+    }
+
+    .setting-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      padding: 13px 0;
+      border-top: 1px solid var(--line);
+      font-size: 17px;
+      color: #303a49;
+    }
+
+    .choice-row {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    .choice {
+      padding: 9px 15px;
+      border: 1px solid #dfe4ed;
+      border-radius: 7px;
+      color: #5a6474;
+      background: #fff;
+      font-size: 15px;
+    }
+
+    .choice.active {
+      border-color: #ffc2c8;
+      color: var(--red);
+      background: #fff2f3;
+      font-weight: 700;
+    }
+
+    .switch {
+      width: 52px;
+      height: 30px;
+      border: 0;
+      border-radius: 18px;
+      background: #c8ced8;
+      padding: 3px;
+      cursor: pointer;
+    }
+
+    .switch::after {
+      content: "";
+      display: block;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, .18);
+      transition: transform .18s ease;
+    }
+
+    .switch.on { background: var(--red); }
+    .switch.on::after { transform: translateX(22px); }
+
+    .tool-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .tool-row-title {
+      font-weight: 800;
+      font-size: 17px;
+    }
+
+    .tool-row-desc {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .light-link {
+      border: 0;
+      background: transparent;
+      color: var(--blue);
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .sign-hero {
+      margin: -12px -12px 14px;
+      padding: 22px 16px 20px;
+      background: linear-gradient(145deg, #f03742, #ff786e);
+      color: #fff;
+    }
+
+    .broker {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 10px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, .18);
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .broker-logo {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #fff;
+      color: var(--red);
+      display: inline-grid;
+      place-items: center;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .sign-title {
+      margin: 20px 0 8px;
+      font-size: 30px;
+      font-weight: 900;
+      line-height: 1.15;
+    }
+
+    .sign-sub {
+      opacity: .9;
+      font-size: 15px;
+    }
+
+    .benefit-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .benefit {
+      min-height: 72px;
+      border-radius: 10px;
+      padding: 10px 6px;
+      background: rgba(255, 255, 255, .88);
+      color: #8b1d24;
+      text-align: center;
+      font-weight: 800;
+      font-size: 13px;
+      display: grid;
+      place-items: center;
+      line-height: 1.35;
+    }
+
+    .sign-card-title {
+      font-weight: 900;
+      font-size: 19px;
+      margin-bottom: 10px;
+    }
+
+    .effect-preview {
+      margin-top: 12px;
+      overflow: hidden;
+      border-radius: 12px;
+      border: 1px solid #eef1f6;
+      background: #f7f9fc;
+    }
+
+    .effect-preview img {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 390px;
+      object-fit: contain;
+      object-position: center;
+      background: #fff;
+    }
+
+    .effect-caption {
+      padding: 9px 10px;
+      color: #606a7a;
+      font-size: 12px;
+      line-height: 1.45;
+      background: #fff;
+    }
+
+    .feature-list {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .feature-list li {
+      display: grid;
+      grid-template-columns: 22px 1fr;
+      gap: 8px;
+      color: #3c4656;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .feature-list li::before {
+      content: "✓";
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #fff0f1;
+      color: var(--red);
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+    }
+
+    .risk {
+      color: #8b93a1;
+      font-size: 12px;
+      line-height: 1.45;
+      padding-bottom: 76px;
+    }
+
+    .fixed-action {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 72px;
+      background: rgba(255, 255, 255, .96);
+      border-top: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+      backdrop-filter: blur(8px);
+    }
+
+    .price {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .price strong {
+      display: block;
+      color: var(--red);
+      font-size: 20px;
+    }
+
+    .side {
+      align-self: center;
+    }
+
+    .side h1 {
+      margin: 0 0 10px;
+      font-size: 24px;
+      line-height: 1.2;
+    }
+
+    .side p {
+      margin: 0 0 16px;
+      color: #596274;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .control-card {
+      padding: 16px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, .78);
+      border: 1px solid rgba(224, 229, 238, .9);
+      box-shadow: 0 10px 24px rgba(25, 35, 55, .08);
+      margin-bottom: 12px;
+    }
+
+    .control-title {
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+
+    .control-grid {
+      display: grid;
+      gap: 8px;
+    }
+
+    .control-grid button {
+      min-height: 38px;
+      border: 1px solid #d9dfeb;
+      border-radius: 10px;
+      background: #fff;
+      color: #2e3748;
+      text-align: left;
+      padding: 0 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .control-grid button:hover {
+      border-color: #ffb5bb;
+      color: var(--red);
+    }
+
+    .state-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .state-line span {
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: #eef2f7;
+      color: #596274;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .state-line span.on {
+      background: #fff0f1;
+      color: var(--red);
+    }
+
+    @media (max-width: 860px) {
+      .page {
+        grid-template-columns: 1fr;
+        padding: 16px;
+      }
+      .phone-shell {
+        width: min(412px, 100%);
+        height: 884px;
+        justify-self: center;
+      }
+      .side {
+        width: min(412px, 100%);
+        justify-self: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="phone-shell">
+      <div class="phone" id="phone">
+        <section class="screen active" data-screen="fundTab">
+          <div class="status"><span>19:34</span><span>5G 100%</span></div>
+          <header class="appbar">
+            <button class="back" type="button">‹</button>
+            <div class="title">泰晶科技(603738)<div class="subtitle">59.00　+3.49　+6.29%</div></div>
+            <button class="more" type="button">•••</button>
+          </header>
+          <div class="content">
+            <section class="card quote-card">
+              <div>
+                <div class="quote-main">+8206.1万</div>
+                <div class="quote-sub">主力资金净流入</div>
+              </div>
+              <div class="donut">
+                <div class="donut-graph"></div>
+                <div class="legend">主力占比　43%<br>散户占比　57%</div>
+              </div>
+            </section>
+
+            <div class="tabs">
+              <div class="tab">热点</div>
+              <div class="tab">要事</div>
+              <div class="tab active">资金</div>
+              <div class="tab">深度</div>
+              <div class="tab">财务</div>
+            </div>
+            <section class="card" style="border-radius:0 0 12px 12px;margin-top:0;">
+              <div class="fund-module">
+                <div class="module-title">主力资金</div>
+                <div>主力资金净流入 <b style="color:var(--red)">+8206.1万</b>，净流入额市场排名 244/5528，占流通市值比例 0.36%。</div>
+                <button class="link-row" type="button" data-action="goSignalSign">查看近期主力信号 ›</button>
+                <div class="range-tabs"><span class="active">今日</span><span>5日</span><span>10日</span><span>20日</span></div>
+                <div class="mini-chart">
+                  <svg viewBox="0 0 320 160" preserveAspectRatio="none">
+                    <polyline points="0,142 20,80 42,98 64,48 86,58 112,40 140,62 168,78 198,88 224,108 252,122 286,116 320,106" fill="none" stroke="#f28a22" stroke-width="3" />
+                    <polyline points="0,132 24,92 52,70 82,74 110,82 140,96 170,104 204,116 236,122 270,118 320,112" fill="none" stroke="#c7cdd8" stroke-width="3" />
+                  </svg>
+                </div>
+              </div>
+            </section>
+            <section class="card">
+              <div class="module-title">融资融券</div>
+              <div style="color:#556071;line-height:1.65;">融资余额2连降，近5日融资余额增加2.1亿，两融余额差值11.39亿。</div>
+            </section>
+          </div>
+          <footer class="bottom-bar">
+            <div class="bar-item"><strong>□</strong>2.6万</div>
+            <div class="bar-item"><strong>↗</strong>1106</div>
+            <div class="bar-item"><strong>♢</strong>6981</div>
+            <div class="bar-item"><strong>⇆</strong>模拟</div>
+            <button class="trade-btn buy">买入</button>
+            <button class="trade-btn sell">卖出</button>
+          </footer>
+        </section>
+
+        <section class="screen" data-screen="fundDetail">
+          <div class="status"><span>17:40</span><span>5G 100%</span></div>
+          <header class="appbar">
+            <button class="back" type="button" data-action="showFundTab">‹</button>
+            <div class="title">泰晶科技(603738)</div>
+            <button class="more" type="button">•••</button>
+          </header>
+          <div class="content" style="padding:0;">
+            <div class="detail-head">
+              <div class="pill-tabs"><span class="active">主力资金</span><span>融资融券</span><span>龙虎榜</span><span>大宗交易</span></div>
+              <div class="detail-title-row">
+                <div class="detail-title">今日资金流向(万元) <span class="info-icon">i</span></div>
+                <button class="detail-link" type="button" data-action="goSignalSign">查看主力信号</button>
+              </div>
+              <div style="font-size:17px;color:#4d5666;">主力净流入 <span class="big-number">+8206.1</span></div>
+              <div style="font-size:15px;line-height:1.6;color:#3d4655;">主力净流入额市场排名244/5528，占流通市值比例0.36%；今日净流入较近5日均值减少5389.00万元。</div>
+            </div>
+            <section class="card" style="margin:12px;">
+              <div class="flow-grid">
+                <div class="donut-graph" style="width:170px;height:170px;justify-self:center;"></div>
+                <div style="font-size:14px;line-height:2.1;color:#5b6474;">
+                  <b style="color:var(--red)">21.79%</b> 主力流入<br>
+                  <b style="color:#ef7a82">28.21%</b> 散户流入<br>
+                  <b style="color:#23a55d">20.70%</b> 主力流出<br>
+                  <b style="color:#75c68a">29.30%</b> 散户流出
+                </div>
+              </div>
+              <div class="bar-list">
+                <div class="bar-line"><span>超大单</span><b style="color:var(--red)">+13550.9</b><i class="bar-fill"></i></div>
+                <div class="bar-line"><span>大单</span><b style="color:var(--green)">-5344.8</b><i class="bar-fill green" style="width:48%;"></i></div>
+                <div class="bar-line"><span>中单</span><b style="color:var(--green)">-14022.8</b><i class="bar-fill green" style="width:92%;"></i></div>
+                <div class="bar-line"><span>小单</span><b style="color:var(--red)">+5816.7</b><i class="bar-fill" style="width:54%;"></i></div>
+              </div>
+            </section>
+            <section class="card" style="margin:12px;">
+              <div class="module-title">今日资金趋势</div>
+              <div class="mini-chart">
+                <svg viewBox="0 0 320 160" preserveAspectRatio="none">
+                  <polyline points="0,142 20,80 42,98 64,48 86,58 112,40 140,62 168,78 198,88 224,108 252,122 286,116 320,106" fill="none" stroke="#f28a22" stroke-width="3" />
+                  <polyline points="0,132 24,92 52,70 82,74 110,82 140,96 170,104 204,116 236,122 270,118 320,112" fill="none" stroke="#c7cdd8" stroke-width="3" />
+                </svg>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section class="screen" data-screen="kline">
+          <div class="status"><span>10:07</span><span>5G 68%</span></div>
+          <header class="appbar">
+            <button class="back" type="button" data-action="showFundTab">‹</button>
+            <div class="title">泰晶科技(603738)<div class="subtitle">60.10　+1.10　+1.86%</div></div>
+            <button class="more" type="button">•••</button>
+          </header>
+          <div class="notice"><span>MCU芯片再掀提价潮 10只概念股获外资机构调研</span><span>×</span></div>
+          <div class="kline-wrap">
+            <div class="k-chart-area">
+              <div class="k-left">
+                <div class="ma-line">日线　MA5:54.04　10:49.20　20:47.70　30:48.99</div>
+                <div class="k-chart">
+                  <svg viewBox="0 0 260 360" preserveAspectRatio="none">
+                    <polyline points="8,330 28,292 48,250 70,190 92,138 112,118 132,156 152,206 174,232 196,206 218,150 242,66" fill="none" stroke="#d2a900" stroke-width="2" />
+                    <polyline points="8,340 35,300 62,262 92,222 122,202 152,210 182,214 212,180 244,104" fill="none" stroke="#16a9d8" stroke-width="2" />
+                    <g stroke-width="2">
+                      <line x1="18" y1="318" x2="18" y2="286" stroke="#e9303a"/><rect x="12" y="292" width="12" height="24" fill="#e9303a"/>
+                      <line x1="38" y1="286" x2="38" y2="242" stroke="#e9303a"/><rect x="32" y="248" width="12" height="36" fill="#e9303a"/>
+                      <line x1="58" y1="250" x2="58" y2="218" stroke="#16a85a"/><rect x="52" y="226" width="12" height="18" fill="#16a85a"/>
+                      <line x1="78" y1="204" x2="78" y2="164" stroke="#e9303a"/><rect x="72" y="174" width="12" height="28" fill="#e9303a"/>
+                      <line x1="98" y1="142" x2="98" y2="96" stroke="#e9303a"/><rect x="92" y="108" width="12" height="30" fill="#e9303a"/>
+                      <line x1="118" y1="110" x2="118" y2="78" stroke="#16a85a"/><rect x="112" y="88" width="12" height="18" fill="#16a85a"/>
+                      <line x1="138" y1="148" x2="138" y2="122" stroke="#16a85a"/><rect x="132" y="128" width="12" height="18" fill="#16a85a"/>
+                      <line x1="158" y1="202" x2="158" y2="170" stroke="#16a85a"/><rect x="152" y="178" width="12" height="20" fill="#16a85a"/>
+                      <line x1="178" y1="226" x2="178" y2="190" stroke="#e9303a"/><rect x="172" y="198" width="12" height="24" fill="#e9303a"/>
+                      <line x1="198" y1="204" x2="198" y2="176" stroke="#e9303a"/><rect x="192" y="184" width="12" height="18" fill="#e9303a"/>
+                      <line x1="218" y1="150" x2="218" y2="108" stroke="#e9303a"/><rect x="212" y="118" width="12" height="28" fill="#e9303a"/>
+                      <line x1="238" y1="74" x2="238" y2="34" stroke="#16a85a"/><rect x="232" y="48" width="12" height="20" fill="#16a85a"/>
+                    </g>
+                  </svg>
+                </div>
+                <div id="signalLayer">
+                  <button class="signal-tag weak" style="left:96px;top:126px;" type="button" data-action="showSignalPop">减</button>
+                  <button class="signal-tag" style="left:174px;top:190px;" type="button" data-action="showSignalPop">进</button>
+                  <button class="signal-tag" style="left:218px;top:52px;" type="button" data-action="showSignalPop">加</button>
+                </div>
+                <div class="signal-pop" id="signalPop">
+                  <strong>06-17 主力加仓</strong><br>
+                  近5日主力净流入 +8206.1万，大单占比提升。仅作辅助分析，不构成投资建议。
+                </div>
+                <div class="sub-indicator">
+                  <div class="indicator-title"><span>成交量</span><span>量:63.68万手　MA5:61.92万</span></div>
+                  <div class="volume-bars">
+                    <i style="height:42%"></i><i style="height:56%"></i><i style="height:77%"></i><i style="height:66%"></i><i style="height:31%"></i><i style="height:46%"></i><i style="height:64%"></i><i style="height:82%"></i><i style="height:48%"></i><i style="height:71%"></i><i style="height:59%"></i><i style="height:88%"></i>
+                  </div>
+                </div>
+              </div>
+              <aside class="chip-panel">
+                <div class="chip-graph" id="chipGraph">
+                  <i class="chip-bar blue" style="top:34px;width:34px"></i>
+                  <i class="chip-bar" style="top:50px;width:78px"></i>
+                  <i class="chip-bar" style="top:66px;width:104px"></i>
+                  <i class="chip-bar" style="top:82px;width:92px"></i>
+                  <i class="chip-bar" style="top:98px;width:64px"></i>
+                  <i class="chip-bar" style="top:132px;width:88px"></i>
+                  <i class="chip-bar" style="top:148px;width:110px"></i>
+                  <i class="chip-bar" style="top:164px;width:96px"></i>
+                  <i class="chip-bar" style="top:180px;width:52px"></i>
+                  <i class="chip-bar" style="top:218px;width:28px"></i>
+                  <div class="cost-marker" id="costMarker"><span>主力成本</span></div>
+                  <div class="chip-paywall" id="chipPaywall">
+                    <div style="font-weight:900;color:#202938;">主力筹码形态</div>
+                    <div style="font-size:12px;color:#6f7888;">解锁主力成本与持仓结构</div>
+                    <button class="primary-btn" type="button" data-action="goChipSign">立即解锁</button>
+                  </div>
+                </div>
+                <div class="chip-meta">
+                  <div class="chip-tabs">
+                    <button type="button" id="allChipBtn" class="active" data-action="showAllChip">全部筹码</button>
+                    <button type="button" id="mainChipBtn" data-action="showMainChip">主力筹码</button>
+                  </div>
+                  <div class="chip-data" id="chipData">
+                    收盘获利：<strong>98.65%</strong><br>
+                    平均成本：<strong>53.56</strong><br>
+                    价格区间：42.87~59.13<br>
+                    集中度：15.94%
+                  </div>
+                </div>
+              </aside>
+            </div>
+            <nav class="k-tabs">
+              <span>分时</span><span>五日</span><span class="active">日K</span><span>周K</span><span>月K</span><span>更多</span><button class="settings-btn" type="button" data-action="openSettings">▦</button>
+            </nav>
+          </div>
+          <footer class="bottom-bar">
+            <div class="bar-item"><strong>□</strong>2.6万</div>
+            <div class="bar-item"><strong>↗</strong>1106</div>
+            <div class="bar-item"><strong>♢</strong>6981</div>
+            <div class="bar-item"><strong>⇆</strong>模拟</div>
+            <button class="trade-btn buy">买入</button>
+            <button class="trade-btn sell">卖出</button>
+          </footer>
+
+          <div class="sheet-backdrop" id="settingsSheet">
+            <div class="sheet">
+              <div id="settingsMain">
+                <div class="sheet-head">
+                  <div class="sheet-tabs"><span>分时</span><span class="active">K线</span></div>
+                  <button class="back" type="button" data-action="closeSettings">×</button>
+                </div>
+                <div class="tool-grid">
+                  <button class="tool-card active" type="button"><span class="tool-icon">▰</span>筹码分布</button>
+                  <button class="tool-card" type="button"><span class="tool-icon">⌁</span>趋势线</button>
+                  <button class="tool-card" type="button"><span class="tool-icon">⌇</span>支撑压力位</button>
+                  <button class="tool-card signal-tool active" id="signalToolCard" type="button" data-action="toggleSignal"><span class="paid-badge open" id="signalBadge">已开通</span><span class="tool-icon">↕</span>主力信号<small id="signalToolStatus">已开启</small></button>
+                  <button class="tool-card signal-tool" type="button"><span class="paid-badge">专享</span><span class="tool-icon">◇</span>波段宝<small>中金财富专享</small></button>
+                </div>
+                <div class="setting-row"><span>复权类型</span><div class="choice-row"><span class="choice">不复权</span><span class="choice active">前复权</span><span class="choice">后复权</span></div></div>
+                <div class="setting-row"><span>K线样式</span><div class="choice-row"><span class="choice active">实心阳线</span><span class="choice">空心阳线</span></div></div>
+                <div class="setting-row"><span>跳空缺口</span><button class="switch" type="button"></button></div>
+                <div class="setting-row"><span>技术指标</span><span>›</span></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="screen" data-screen="signalSign">
+          <div class="status"><span>19:14</span><span>5G 98%</span></div>
+          <header class="appbar">
+            <button class="back" type="button" data-action="showFundTab">‹</button>
+            <div class="title">主力信号</div>
+            <button class="more" type="button">•••</button>
+          </header>
+          <div class="content">
+            <section class="sign-hero">
+              <div class="broker"><span class="broker-logo">券</span> XX证券提供服务</div>
+              <div class="sign-title">看懂主力资金变化</div>
+              <div class="sign-sub">在 K 线图中展示主力进场、加仓、减仓、清仓信号</div>
+              <div class="benefit-grid">
+                <div class="benefit">进场 / 清仓<br>成对识别</div>
+                <div class="benefit">加仓 / 减仓<br>阶段提示</div>
+                <div class="benefit">K线叠加<br>随时关闭</div>
+              </div>
+            </section>
+            <section class="card">
+              <div class="sign-card-title">开通后可获得</div>
+              <ul class="feature-list">
+                <li>在 K 线图中展示“进、加、减、清”主力信号，辅助观察主力资金阶段变化。</li>
+                <li>点击信号点查看资金变化说明，帮助理解资金和股价的阶段关系。</li>
+                <li>可在 K 线设置中随时开启或关闭展示，不影响原有 K 线分析。</li>
+              </ul>
+              <div class="effect-preview">
+                <img src="assets/main-signal-demo.jpg" alt="主力信号效果示意" />
+                <div class="effect-caption">效果示意：开通后在 K 线中查看“进、加、减、清”主力信号。</div>
+              </div>
+            </section>
+            <section class="card risk">
+              服务由签约券商提供，微证券提供入口和展示承接；具体服务内容、风险揭示和协议以券商签约页为准。
+            </section>
+          </div>
+          <div class="fixed-action">
+            <div class="price"><strong>券商签约</strong>开通后回到 K 线展示</div>
+            <button class="primary-btn" type="button" data-action="subscribeSignal">立即开通</button>
+          </div>
+        </section>
+
+        <section class="screen" data-screen="chipSign">
+          <div class="status"><span>19:08</span><span>5G 96%</span></div>
+          <header class="appbar">
+            <button class="back" type="button" data-action="showKline">‹</button>
+            <div class="title">主力筹码</div>
+            <button class="more" type="button">•••</button>
+          </header>
+          <div class="content">
+            <section class="sign-hero" style="background:linear-gradient(145deg,#e9303a,#ff8a5c);">
+              <div class="broker"><span class="broker-logo">券</span> XX证券提供服务</div>
+              <div class="sign-title">看清主力筹码位置</div>
+              <div class="sign-sub">在现有筹码分布中解锁主力筹码形态、主力成本和集中度</div>
+              <div class="benefit-grid">
+                <div class="benefit">主力筹码<br>形态</div>
+                <div class="benefit">主力成本<br>区间</div>
+                <div class="benefit">集中度<br>变化</div>
+              </div>
+            </section>
+            <section class="card">
+              <div class="sign-card-title">开通后可获得</div>
+              <ul class="feature-list">
+                <li>在 K 线右侧筹码区切换查看主力筹码，和全部筹码形成对照。</li>
+                <li>查看主力筹码成本、主力持仓比例、筹码集中度等关键指标。</li>
+                <li>保持在原筹码场景内使用，不新增复杂页面，不干扰 K 线分析。</li>
+              </ul>
+              <div class="effect-preview">
+                <img src="assets/main-chip-demo.jpg" alt="主力筹码效果示意" />
+                <div class="effect-caption">效果示意：开通后在筹码区查看主力筹码形态、主力成本和集中度。</div>
+              </div>
+            </section>
+            <section class="card risk">
+              服务由签约券商提供，微证券提供入口和展示承接。主力筹码基于筹码分布和成交数据生成，仅作为辅助分析，不构成投资建议。市场有风险，投资需谨慎。
+            </section>
+          </div>
+          <div class="fixed-action">
+            <div class="price"><strong>券商签约</strong>开通后回到筹码区展示</div>
+            <button class="primary-btn" type="button" data-action="subscribeChip">立即开通</button>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <aside class="side">
+      <h1>交易工具商业化 Demo</h1>
+      <p>聚焦主力信号和主力筹码：入口自然植入免费工具，签约由券商承接，付费价值回到 K 线和筹码场景展示。</p>
+
+      <div class="control-card">
+        <div class="control-title">演示路径</div>
+        <div class="control-grid">
+          <button type="button" data-action="showFundTab">资金 tab：查看近期主力信号</button>
+          <button type="button" data-action="showFundDetail">主力资金详情：查看主力信号</button>
+          <button type="button" data-action="goSignalSign">主力信号券商签约页</button>
+          <button type="button" data-action="subscribeSignal">签约成功：K线展示主力信号</button>
+          <button type="button" data-action="showKline">K线 / 主力筹码区</button>
+          <button type="button" data-action="openSettings">K线设置：信号工具管理</button>
+          <button type="button" data-action="showMainChipDemo">主力筹码：未开通态</button>
+          <button type="button" data-action="goChipSign">主力筹码券商签约页</button>
+          <button type="button" data-action="subscribeChip">签约成功：主力筹码已开通</button>
+        </div>
+      </div>
+
+      <div class="control-card">
+        <div class="control-title">当前状态</div>
+        <div class="state-line">
+          <span id="stateSignal">主力信号未开通</span>
+          <span id="stateSignalVisible">信号未展示</span>
+          <span id="stateChip">主力筹码未开通</span>
+        </div>
+      </div>
+
+      <div class="control-card">
+        <div class="control-title">重置</div>
+        <div class="control-grid">
+          <button type="button" data-action="resetDemo">恢复未开通状态</button>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <script>
+    const state = {
+      screen: 'fundTab',
+      signalSubscribed: false,
+      signalVisible: false,
+      chipSubscribed: false,
+      mainChipSelected: false
+    };
+
+    const screens = [...document.querySelectorAll('.screen')];
+    const settingsSheet = document.getElementById('settingsSheet');
+    const signalLayer = document.getElementById('signalLayer');
+    const signalPop = document.getElementById('signalPop');
+    const signalToolCard = document.getElementById('signalToolCard');
+    const signalToolStatus = document.getElementById('signalToolStatus');
+    const signalBadge = document.getElementById('signalBadge');
+    const chipPaywall = document.getElementById('chipPaywall');
+    const chipData = document.getElementById('chipData');
+    const allChipBtn = document.getElementById('allChipBtn');
+    const mainChipBtn = document.getElementById('mainChipBtn');
+    const costMarker = document.getElementById('costMarker');
+    const chipGraph = document.getElementById('chipGraph');
+
+    function showScreen(name) {
+      state.screen = name;
+      screens.forEach(screen => screen.classList.toggle('active', screen.dataset.screen === name));
+      closeSettings();
+      render();
+    }
+
+    function openSettings() {
+      state.signalSubscribed = true;
+      state.signalVisible = true;
+      showScreen('kline');
+      settingsSheet.classList.add('show');
+    }
+
+    function closeSettings() {
+      settingsSheet.classList.remove('show');
+    }
+
+    function selectMainChip() {
+      state.mainChipSelected = true;
+      render();
+    }
+
+    function selectAllChip() {
+      state.mainChipSelected = false;
+      render();
+    }
+
+    function subscribeSignal() {
+      state.signalSubscribed = true;
+      state.signalVisible = true;
+      showScreen('kline');
+      signalPop.classList.add('show');
+      setTimeout(() => signalPop.classList.remove('show'), 2800);
+    }
+
+    function subscribeChip() {
+      state.chipSubscribed = true;
+      state.mainChipSelected = true;
+      showScreen('kline');
+    }
+
+    function toggleSignal() {
+      if (!state.signalSubscribed) {
+        showScreen('signalSign');
+        return;
+      }
+      state.signalVisible = !state.signalVisible;
+      render();
+    }
+
+    function showSignalPop() {
+      if (!state.signalVisible) return;
+      signalPop.classList.toggle('show');
+    }
+
+    function resetDemo() {
+      state.signalSubscribed = false;
+      state.signalVisible = false;
+      state.chipSubscribed = false;
+      state.mainChipSelected = false;
+      showScreen('fundTab');
+    }
+
+    function render() {
+      signalLayer.style.display = state.signalSubscribed && state.signalVisible ? 'block' : 'none';
+      signalToolCard.classList.toggle('active', state.signalSubscribed && state.signalVisible);
+      signalToolStatus.textContent = state.signalSubscribed && state.signalVisible ? '已开启' : (state.signalSubscribed ? '已关闭' : '去开通');
+      signalBadge.textContent = state.signalSubscribed ? '已开通' : '专享';
+      signalBadge.classList.toggle('open', state.signalSubscribed);
+
+      allChipBtn.classList.toggle('active', !state.mainChipSelected);
+      mainChipBtn.classList.toggle('active', state.mainChipSelected);
+      chipGraph.classList.toggle('main-mode', state.mainChipSelected);
+      chipPaywall.classList.toggle('show', state.mainChipSelected && !state.chipSubscribed);
+      costMarker.classList.toggle('show', state.mainChipSelected);
+
+      if (state.mainChipSelected && state.chipSubscribed) {
+        chipData.innerHTML = '主力成本：<strong>53.12</strong><br>主力持仓：<strong>42.8%</strong><br>价格区间：45.00~55.08<br>集中度：10.07%';
+      } else if (state.mainChipSelected && !state.chipSubscribed) {
+        chipData.innerHTML = '收盘获利：<span class="muted-lock">****</span><br>平均成本：<span class="muted-lock">****</span><br>主力持仓：<span class="muted-lock">****</span><br>集中度：<span class="muted-lock">****</span>';
+      } else {
+        chipData.innerHTML = '收盘获利：<strong>98.65%</strong><br>平均成本：<strong>53.56</strong><br>价格区间：42.87~59.13<br>集中度：15.94%';
+      }
+
+      const stateSignal = document.getElementById('stateSignal');
+      const stateSignalVisible = document.getElementById('stateSignalVisible');
+      const stateChip = document.getElementById('stateChip');
+      stateSignal.textContent = state.signalSubscribed ? '主力信号已开通' : '主力信号未开通';
+      stateSignal.classList.toggle('on', state.signalSubscribed);
+      stateSignalVisible.textContent = state.signalVisible ? '信号已展示' : '信号未展示';
+      stateSignalVisible.classList.toggle('on', state.signalVisible);
+      stateChip.textContent = state.chipSubscribed ? '主力筹码已开通' : '主力筹码未开通';
+      stateChip.classList.toggle('on', state.chipSubscribed);
+    }
+
+    const actions = {
+      showFundTab: () => showScreen('fundTab'),
+      showFundDetail: () => showScreen('fundDetail'),
+      showKline: () => showScreen('kline'),
+      goSignalSign: () => showScreen('signalSign'),
+      goChipSign: () => showScreen('chipSign'),
+      subscribeSignal,
+      subscribeChip,
+      openSettings,
+      showMainChipDemo: () => {
+        state.mainChipSelected = true;
+        showScreen('kline');
+      },
+      closeSettings,
+      toggleSignal,
+      showSignalPop,
+      showMainChip: selectMainChip,
+      showAllChip: selectAllChip,
+      resetDemo
+    };
+
+    document.addEventListener('click', event => {
+      const target = event.target.closest('[data-action]');
+      if (!target) return;
+      const action = actions[target.dataset.action];
+      if (action) action();
+    });
+
+    settingsSheet.addEventListener('click', event => {
+      if (event.target === settingsSheet) closeSettings();
+    });
+
+    render();
+  </script>
+</body>
+</html>
