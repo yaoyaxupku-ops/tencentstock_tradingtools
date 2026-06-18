@@ -1027,13 +1027,7 @@
     }
 
     .effect-preview img {
-      display: block;
-      width: 100%;
-      height: auto;
-      max-height: 390px;
-      object-fit: contain;
-      object-position: center;
-      background: #fff;
+      display: none;
     }
 
     .effect-caption {
@@ -1042,6 +1036,129 @@
       font-size: 12px;
       line-height: 1.45;
       background: #fff;
+    }
+
+    .signal-demo-art {
+      padding: 12px;
+      background: #fff;
+    }
+
+    .signal-demo-title,
+    .chip-demo-title {
+      margin-bottom: 8px;
+      font-size: 16px;
+      font-weight: 900;
+      color: #1f2937;
+    }
+
+    .signal-mini-chart {
+      position: relative;
+      height: 180px;
+      border: 1px solid #f0d1d4;
+      border-radius: 10px;
+      background:
+        linear-gradient(#f1f3f7 1px, transparent 1px) 0 35px / 100% 45px,
+        linear-gradient(90deg, #f1f3f7 1px, transparent 1px) 50% 0 / 50% 100%;
+      overflow: hidden;
+    }
+
+    .signal-mini-chart svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .mini-signal {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      border-radius: 7px;
+      border: 1px solid #ffb8bf;
+      background: #fff0f1;
+      color: var(--red);
+      font-weight: 900;
+      font-size: 14px;
+    }
+
+    .mini-signal.green {
+      border-color: #b5e6ca;
+      background: #eefbf4;
+      color: var(--green);
+    }
+
+    .signal-callout {
+      position: absolute;
+      left: 12px;
+      top: 18px;
+      width: 140px;
+      padding: 8px;
+      border: 1px solid #f0b5bc;
+      border-radius: 8px;
+      color: #c62430;
+      background: rgba(255, 255, 255, .9);
+      font-size: 13px;
+      line-height: 1.35;
+      font-weight: 800;
+    }
+
+    .chip-demo-art {
+      padding: 12px;
+      background: #fff;
+    }
+
+    .chip-demo-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .chip-demo-panel {
+      min-height: 180px;
+      border: 1px solid #eef1f6;
+      border-radius: 10px;
+      padding: 8px;
+      background: #fbfcff;
+    }
+
+    .chip-demo-bars {
+      position: relative;
+      height: 112px;
+      margin-bottom: 8px;
+      background:
+        linear-gradient(#f2f4f8 1px, transparent 1px) 0 28px / 100% 38px;
+    }
+
+    .chip-demo-bars i {
+      position: absolute;
+      left: 0;
+      height: 7px;
+      border-radius: 0 7px 7px 0;
+      background: #f1b2b8;
+    }
+
+    .chip-demo-bars.main i {
+      background: #e0313d;
+    }
+
+    .chip-demo-bars.main i:nth-child(2n) {
+      background: #347bd8;
+    }
+
+    .demo-cost {
+      border-top: 1px dashed #d69a32;
+      color: #b26a00;
+      font-size: 12px;
+      font-weight: 800;
+      padding-top: 4px;
+    }
+
+    .chip-demo-metric {
+      color: #4c5667;
+      font-size: 12px;
+      line-height: 1.55;
     }
 
     .feature-list {
@@ -1446,7 +1563,27 @@
                 <li>可在 K 线设置中随时开启或关闭展示，不影响原有 K 线分析。</li>
               </ul>
               <div class="effect-preview">
-                <img src="assets/main-signal-demo.jpg" alt="主力信号效果示意" />
+                <div class="signal-demo-art">
+                  <div class="signal-demo-title">功能一：主力进出场信号</div>
+                  <div class="signal-mini-chart">
+                    <svg viewBox="0 0 320 180" preserveAspectRatio="none">
+                      <polyline points="12,150 48,132 84,126 118,118 152,108 186,88 220,64 258,38 304,52" fill="none" stroke="#606b7a" stroke-width="2" />
+                      <polyline points="14,154 52,140 86,136 120,128 154,112 188,94 222,68 260,42 306,60" fill="none" stroke="#d9a84d" stroke-width="2" />
+                      <g stroke-width="1.5">
+                        <line x1="40" y1="146" x2="40" y2="120" stroke="#16a85a"/><rect x="35" y="126" width="10" height="16" fill="#16a85a"/>
+                        <line x1="92" y1="132" x2="92" y2="104" stroke="#e9303a"/><rect x="87" y="110" width="10" height="20" fill="#e9303a"/>
+                        <line x1="144" y1="116" x2="144" y2="92" stroke="#16a85a"/><rect x="139" y="98" width="10" height="16" fill="#16a85a"/>
+                        <line x1="196" y1="84" x2="196" y2="52" stroke="#e9303a"/><rect x="191" y="60" width="10" height="22" fill="#e9303a"/>
+                        <line x1="252" y1="42" x2="252" y2="14" stroke="#e9303a"/><rect x="247" y="20" width="10" height="20" fill="#e9303a"/>
+                      </g>
+                    </svg>
+                    <div class="signal-callout">底部发出“进”信号，上涨后出现“清”信号。</div>
+                    <span class="mini-signal green" style="left:54px;top:116px;">减</span>
+                    <span class="mini-signal" style="left:144px;top:98px;">进</span>
+                    <span class="mini-signal" style="left:236px;top:28px;">加</span>
+                    <span class="mini-signal green" style="left:276px;top:42px;">清</span>
+                  </div>
+                </div>
                 <div class="effect-caption">效果示意：开通后在 K 线中查看“进、加、减、清”主力信号。</div>
               </div>
             </section>
@@ -1486,7 +1623,32 @@
                 <li>保持在原筹码场景内使用，不新增复杂页面，不干扰 K 线分析。</li>
               </ul>
               <div class="effect-preview">
-                <img src="assets/main-chip-demo.jpg" alt="主力筹码效果示意" />
+                <div class="chip-demo-art">
+                  <div class="chip-demo-title">功能一：主力筹码分布</div>
+                  <div class="chip-demo-grid">
+                    <div class="chip-demo-panel">
+                      <div class="chip-demo-bars main">
+                        <i style="top:18px;width:44px"></i>
+                        <i style="top:34px;width:22px"></i>
+                        <i style="top:58px;width:78px"></i>
+                        <i style="top:74px;width:52px"></i>
+                      </div>
+                      <div class="demo-cost">主力成本</div>
+                      <div class="chip-demo-metric">主力持仓：+56.44%<br>平均成本：48.5</div>
+                    </div>
+                    <div class="chip-demo-panel">
+                      <div class="chip-demo-bars">
+                        <i style="top:14px;width:52px"></i>
+                        <i style="top:28px;width:86px"></i>
+                        <i style="top:44px;width:104px"></i>
+                        <i style="top:76px;width:68px"></i>
+                        <i style="top:92px;width:32px"></i>
+                      </div>
+                      <div class="demo-cost">主力成本</div>
+                      <div class="chip-demo-metric">主力持仓：-52.17%<br>平均成本：14.82</div>
+                    </div>
+                  </div>
+                </div>
                 <div class="effect-caption">效果示意：开通后在筹码区查看主力筹码形态、主力成本和集中度。</div>
               </div>
             </section>
