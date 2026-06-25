@@ -456,6 +456,136 @@
       white-space: nowrap;
     }
 
+    .main-indicator {
+      position: absolute;
+      left: 8px;
+      right: 8px;
+      top: 7px;
+      z-index: 6;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 23px;
+      color: #5b6474;
+      font-size: 12px;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    .indicator-select {
+      border: 0;
+      border-radius: 5px;
+      background: rgba(244, 246, 250, .94);
+      color: #303a49;
+      padding: 4px 7px;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1;
+      cursor: pointer;
+      pointer-events: auto;
+    }
+
+    .indicator-values {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .indicator-values.broker {
+      color: #505b6b;
+      font-weight: 700;
+    }
+
+    .indicator-menu {
+      position: absolute;
+      left: 8px;
+      top: 34px;
+      z-index: 12;
+      width: 178px;
+      padding: 8px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, .98);
+      border: 1px solid #e9edf4;
+      box-shadow: 0 10px 24px rgba(20, 29, 45, .14);
+      display: none;
+    }
+
+    .indicator-menu.show { display: block; }
+
+    .indicator-menu-title {
+      padding: 3px 5px 6px;
+      color: #8b94a3;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .indicator-option {
+      width: 100%;
+      min-height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      border: 0;
+      border-radius: 7px;
+      background: transparent;
+      color: #303a49;
+      padding: 0 7px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .indicator-option.active {
+      background: #f4f6fa;
+      color: #202938;
+      font-weight: 900;
+    }
+
+    .indicator-option.broker-option {
+      color: var(--red);
+    }
+
+    .mini-badge {
+      padding: 1px 5px;
+      border-radius: 999px;
+      background: #fff1f2;
+      color: var(--red);
+      font-size: 10px;
+      font-weight: 900;
+      flex: 0 0 auto;
+    }
+
+    .broker-signal-layer {
+      position: absolute;
+      inset: 0 0 114px 0;
+      display: none;
+      pointer-events: none;
+      z-index: 4;
+    }
+
+    .broker-signal-layer.show { display: block; }
+
+    .wave-dot {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: rgba(233, 48, 58, .1);
+      border: 1px solid rgba(233, 48, 58, .45);
+      color: var(--red);
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .wave-dot.sell-dot {
+      background: rgba(22, 168, 90, .1);
+      border-color: rgba(22, 168, 90, .45);
+      color: var(--green);
+    }
+
     .signal-tag {
       position: absolute;
       width: 24px;
@@ -1431,7 +1561,17 @@
           <div class="kline-wrap">
             <div class="k-chart-area">
               <div class="k-left">
-                <div class="ma-line">日线　MA5:54.04　10:49.20　20:47.70　30:48.99</div>
+                <div class="main-indicator" id="mainIndicator">
+                  <button class="indicator-select" type="button" data-action="toggleIndicatorMenu"><span id="indicatorName">均线</span> ▼</button>
+                  <div class="indicator-values" id="indicatorValues">MA5:54.04　MA10:49.20　MA20:47.70　MA30:48.99</div>
+                </div>
+                <div class="indicator-menu" id="indicatorMenu">
+                  <div class="indicator-menu-title">主图指标</div>
+                  <button class="indicator-option active" id="indicatorOptionMa" type="button" data-action="selectMa"><span>均线</span><span>✓</span></button>
+                  <button class="indicator-option" id="indicatorOptionBoll" type="button" data-action="selectBoll"><span>BOLL</span></button>
+                  <button class="indicator-option" id="indicatorOptionSar" type="button" data-action="selectSar"><span>SAR</span></button>
+                  <button class="indicator-option broker-option" id="indicatorOptionBroker" type="button" data-action="selectBrokerTool"><span>波段宝 · 中金专享</span><span class="mini-badge">专享</span></button>
+                </div>
                 <div class="k-chart">
                   <svg viewBox="0 0 260 360" preserveAspectRatio="none">
                     <polyline points="8,330 28,292 48,250 70,190 92,138 112,118 132,156 152,206 174,232 196,206 218,150 242,66" fill="none" stroke="#d2a900" stroke-width="2" />
@@ -1456,6 +1596,11 @@
                   <button class="signal-tag weak" style="left:96px;top:126px;" type="button" data-action="showSignalPop">减</button>
                   <button class="signal-tag" style="left:174px;top:190px;" type="button" data-action="showSignalPop">进</button>
                   <button class="signal-tag" style="left:218px;top:52px;" type="button" data-action="showSignalPop">加</button>
+                </div>
+                <div class="broker-signal-layer" id="brokerSignalLayer">
+                  <span class="wave-dot" style="left:78px;top:224px;">买</span>
+                  <span class="wave-dot sell-dot" style="left:178px;top:198px;">卖</span>
+                  <span class="wave-dot" style="left:222px;top:62px;">买</span>
                 </div>
                 <div class="signal-pop" id="signalPop">
                   <strong>06-17 主力加仓</strong><br>
@@ -1526,7 +1671,7 @@
                   <button class="tool-card" type="button"><span class="tool-icon">⌁</span>趋势线</button>
                   <button class="tool-card" type="button"><span class="tool-icon">⌇</span>支撑压力位</button>
                   <button class="tool-card signal-tool active" id="signalToolCard" type="button" data-action="toggleSignal"><span class="paid-badge open" id="signalBadge">已开通</span><span class="tool-icon">↕</span>主力信号<small id="signalToolStatus">已开启</small></button>
-                  <button class="tool-card signal-tool" type="button"><span class="paid-badge">专享</span><span class="tool-icon">◇</span>波段宝<small>中金财富专享</small></button>
+                  <button class="tool-card signal-tool" id="brokerToolCard" type="button" data-action="toggleBrokerTool"><span class="paid-badge" id="brokerBadge">专享</span><span class="tool-icon">◇</span>波段宝<small id="brokerToolStatus">中金财富专享</small></button>
                 </div>
                 <div class="setting-row"><span>复权类型</span><div class="choice-row"><span class="choice">不复权</span><span class="choice active">前复权</span><span class="choice">后复权</span></div></div>
                 <div class="setting-row"><span>K线样式</span><div class="choice-row"><span class="choice active">实心阳线</span><span class="choice">空心阳线</span></div></div>
@@ -1594,6 +1739,67 @@
           <div class="fixed-action">
             <div class="price"><strong>券商签约</strong>开通后回到 K 线展示</div>
             <button class="primary-btn" type="button" data-action="subscribeSignal">立即开通</button>
+          </div>
+        </section>
+
+        <section class="screen" data-screen="brokerSign">
+          <div class="status"><span>19:14</span><span>5G 98%</span></div>
+          <header class="appbar">
+            <button class="back" type="button" data-action="showKline">‹</button>
+            <div class="title">波段宝</div>
+            <button class="more" type="button">•••</button>
+          </header>
+          <div class="content">
+            <section class="sign-hero">
+              <div class="broker"><span class="broker-logo">中</span> 中金财富提供服务</div>
+              <div class="sign-title">券商 K 线信号工具</div>
+              <div class="sign-sub">接入微证券主图指标体系，开通后可在 K 线内切换查看</div>
+              <div class="benefit-grid">
+                <div class="benefit">券商服务<br>合规承接</div>
+                <div class="benefit">主图指标<br>轻量切换</div>
+                <div class="benefit">信号展示<br>随时关闭</div>
+              </div>
+            </section>
+            <section class="card">
+              <div class="sign-card-title">统一入口接入方式</div>
+              <ul class="feature-list">
+                <li>微证券在 K 线主图上方提供“主图指标切换”入口，免费指标与券商信号类工具统一管理。</li>
+                <li>用户选择券商专享指标后进入对应券商签约页，服务、协议、付费和风险揭示由券商承接。</li>
+                <li>签约后回到 K 线展示对应信号；具体指标样式以券商服务为准，微证券只负责入口与场景融合。</li>
+              </ul>
+              <div class="effect-preview">
+                <div class="signal-demo-art">
+                  <div class="signal-demo-title">主图指标统一切换</div>
+                  <div class="signal-mini-chart">
+                    <div style="position:absolute;left:12px;right:12px;top:10px;display:flex;gap:6px;align-items:center;font-size:12px;color:#5b6474;">
+                      <span style="padding:4px 7px;border-radius:5px;background:#f4f6fa;color:#303a49;font-weight:900;">均线 ▼</span>
+                      <span>MA5:54.04　MA10:49.20　MA20:47.70</span>
+                    </div>
+                    <svg viewBox="0 0 320 180" preserveAspectRatio="none" style="margin-top:22px;">
+                      <polyline points="12,150 48,132 84,126 118,118 152,108 186,88 220,64 258,38 304,52" fill="none" stroke="#606b7a" stroke-width="2" />
+                      <polyline points="14,154 52,140 86,136 120,128 154,112 188,94 222,68 260,42 306,60" fill="none" stroke="#d9a84d" stroke-width="2" />
+                      <g stroke-width="1.5">
+                        <line x1="40" y1="146" x2="40" y2="120" stroke="#16a85a"/><rect x="35" y="126" width="10" height="16" fill="#16a85a"/>
+                        <line x1="92" y1="132" x2="92" y2="104" stroke="#e9303a"/><rect x="87" y="110" width="10" height="20" fill="#e9303a"/>
+                        <line x1="144" y1="116" x2="144" y2="92" stroke="#16a85a"/><rect x="139" y="98" width="10" height="16" fill="#16a85a"/>
+                        <line x1="196" y1="84" x2="196" y2="52" stroke="#e9303a"/><rect x="191" y="60" width="10" height="22" fill="#e9303a"/>
+                        <line x1="252" y1="42" x2="252" y2="14" stroke="#e9303a"/><rect x="247" y="20" width="10" height="20" fill="#e9303a"/>
+                      </g>
+                    </svg>
+                    <span class="mini-signal" style="left:88px;top:126px;">买</span>
+                    <span class="mini-signal green" style="left:198px;top:78px;">卖</span>
+                  </div>
+                </div>
+                <div class="effect-caption">效果示意：入口统一，信号样式由券商服务决定。</div>
+              </div>
+            </section>
+            <section class="card risk">
+              本页为券商信号类工具接入示意。服务由签约券商提供，微证券提供入口和场景承接；具体服务名称、展示样式、协议和风险揭示以券商页面为准。
+            </section>
+          </div>
+          <div class="fixed-action">
+            <div class="price"><strong>券商签约</strong>开通后回到 K 线主图展示</div>
+            <button class="primary-btn" type="button" data-action="subscribeBrokerTool">立即开通</button>
           </div>
         </section>
 
@@ -1666,7 +1872,7 @@
 
     <aside class="side">
       <h1>交易工具商业化 Demo</h1>
-      <p>聚焦主力信号和主力筹码：入口自然植入免费工具，签约由券商承接，付费价值回到 K 线和筹码场景展示。</p>
+      <p>聚焦主力信号、主力筹码和券商 K 线信号工具融合：入口自然植入免费工具，签约由券商承接，付费价值回到 K 线和筹码场景展示。</p>
 
       <div class="control-card">
         <div class="control-title">演示路径</div>
@@ -1675,7 +1881,9 @@
           <button type="button" data-action="showFundDetail">主力资金详情：查看主力信号</button>
           <button type="button" data-action="goSignalSign">主力信号券商签约页</button>
           <button type="button" data-action="subscribeSignal">签约成功：K线展示主力信号</button>
-          <button type="button" data-action="showKline">K线 / 主力筹码区</button>
+          <button type="button" data-action="showBrokerToolEntry">K线主图指标：券商工具入口</button>
+          <button type="button" data-action="goBrokerSign">券商K线信号工具签约页</button>
+          <button type="button" data-action="subscribeBrokerTool">签约成功：展示券商信号</button>
           <button type="button" data-action="openSettings">K线设置：信号工具管理</button>
           <button type="button" data-action="showMainChipDemo">主力筹码：未开通态</button>
           <button type="button" data-action="goChipSign">主力筹码券商签约页</button>
@@ -1688,6 +1896,7 @@
         <div class="state-line">
           <span id="stateSignal">主力信号未开通</span>
           <span id="stateSignalVisible">信号未展示</span>
+          <span id="stateBrokerTool">券商信号工具未开通</span>
           <span id="stateChip">主力筹码未开通</span>
         </div>
       </div>
@@ -1706,6 +1915,10 @@
       screen: 'fundTab',
       signalSubscribed: false,
       signalVisible: false,
+      brokerToolSubscribed: false,
+      brokerToolVisible: false,
+      indicatorType: 'ma',
+      indicatorMenuOpen: false,
       chipSubscribed: false,
       mainChipSelected: false
     };
@@ -1717,6 +1930,17 @@
     const signalToolCard = document.getElementById('signalToolCard');
     const signalToolStatus = document.getElementById('signalToolStatus');
     const signalBadge = document.getElementById('signalBadge');
+    const indicatorMenu = document.getElementById('indicatorMenu');
+    const indicatorName = document.getElementById('indicatorName');
+    const indicatorValues = document.getElementById('indicatorValues');
+    const indicatorOptionMa = document.getElementById('indicatorOptionMa');
+    const indicatorOptionBoll = document.getElementById('indicatorOptionBoll');
+    const indicatorOptionSar = document.getElementById('indicatorOptionSar');
+    const indicatorOptionBroker = document.getElementById('indicatorOptionBroker');
+    const brokerSignalLayer = document.getElementById('brokerSignalLayer');
+    const brokerToolCard = document.getElementById('brokerToolCard');
+    const brokerToolStatus = document.getElementById('brokerToolStatus');
+    const brokerBadge = document.getElementById('brokerBadge');
     const chipPaywall = document.getElementById('chipPaywall');
     const chipData = document.getElementById('chipData');
     const allChipBtn = document.getElementById('allChipBtn');
@@ -1727,6 +1951,7 @@
     function showScreen(name) {
       state.screen = name;
       screens.forEach(screen => screen.classList.toggle('active', screen.dataset.screen === name));
+      closeIndicatorMenu();
       closeSettings();
       render();
     }
@@ -1740,6 +1965,10 @@
 
     function closeSettings() {
       settingsSheet.classList.remove('show');
+    }
+
+    function closeIndicatorMenu() {
+      state.indicatorMenuOpen = false;
     }
 
     function selectMainChip() {
@@ -1775,6 +2004,54 @@
       render();
     }
 
+    function toggleIndicatorMenu() {
+      const nextOpen = state.screen === 'kline' ? !state.indicatorMenuOpen : true;
+      showScreen('kline');
+      state.indicatorMenuOpen = nextOpen;
+      render();
+    }
+
+    function selectIndicator(type) {
+      state.indicatorMenuOpen = false;
+      state.indicatorType = type;
+      state.brokerToolVisible = type === 'broker';
+      render();
+    }
+
+    function selectBrokerTool() {
+      state.indicatorMenuOpen = false;
+      if (!state.brokerToolSubscribed) {
+        showScreen('brokerSign');
+        return;
+      }
+      selectIndicator('broker');
+    }
+
+    function showBrokerToolEntry() {
+      showScreen('kline');
+      state.indicatorType = 'ma';
+      state.brokerToolVisible = false;
+      state.indicatorMenuOpen = true;
+      render();
+    }
+
+    function subscribeBrokerTool() {
+      state.brokerToolSubscribed = true;
+      state.brokerToolVisible = true;
+      state.indicatorType = 'broker';
+      showScreen('kline');
+    }
+
+    function toggleBrokerTool() {
+      if (!state.brokerToolSubscribed) {
+        showScreen('brokerSign');
+        return;
+      }
+      state.brokerToolVisible = !state.brokerToolVisible;
+      state.indicatorType = state.brokerToolVisible ? 'broker' : 'ma';
+      render();
+    }
+
     function showSignalPop() {
       if (!state.signalVisible) return;
       signalPop.classList.toggle('show');
@@ -1783,6 +2060,10 @@
     function resetDemo() {
       state.signalSubscribed = false;
       state.signalVisible = false;
+      state.brokerToolSubscribed = false;
+      state.brokerToolVisible = false;
+      state.indicatorType = 'ma';
+      state.indicatorMenuOpen = false;
       state.chipSubscribed = false;
       state.mainChipSelected = false;
       showScreen('fundTab');
@@ -1794,6 +2075,27 @@
       signalToolStatus.textContent = state.signalSubscribed && state.signalVisible ? '已开启' : (state.signalSubscribed ? '已关闭' : '去开通');
       signalBadge.textContent = state.signalSubscribed ? '已开通' : '专享';
       signalBadge.classList.toggle('open', state.signalSubscribed);
+
+      const indicatorText = {
+        ma: { name: '均线', values: 'MA5:54.04　MA10:49.20　MA20:47.70　MA30:48.99' },
+        boll: { name: 'BOLL', values: 'MID:47.70　UP:57.21　LOW:38.42' },
+        sar: { name: 'SAR', values: 'SAR:48.26　趋势:上行' },
+        broker: { name: '波段宝', values: '上升波段延续　中金财富提供服务' }
+      };
+      const currentIndicator = indicatorText[state.indicatorType] || indicatorText.ma;
+      indicatorMenu.classList.toggle('show', state.indicatorMenuOpen);
+      indicatorName.textContent = currentIndicator.name;
+      indicatorValues.textContent = currentIndicator.values;
+      indicatorValues.classList.toggle('broker', state.indicatorType === 'broker');
+      indicatorOptionMa.classList.toggle('active', state.indicatorType === 'ma');
+      indicatorOptionBoll.classList.toggle('active', state.indicatorType === 'boll');
+      indicatorOptionSar.classList.toggle('active', state.indicatorType === 'sar');
+      indicatorOptionBroker.classList.toggle('active', state.indicatorType === 'broker');
+      brokerSignalLayer.classList.toggle('show', state.brokerToolSubscribed && state.brokerToolVisible && state.indicatorType === 'broker');
+      brokerToolCard.classList.toggle('active', state.brokerToolSubscribed && state.brokerToolVisible);
+      brokerToolStatus.textContent = state.brokerToolSubscribed ? (state.brokerToolVisible ? '已开启' : '已关闭') : '中金财富专享';
+      brokerBadge.textContent = state.brokerToolSubscribed ? '已开通' : '专享';
+      brokerBadge.classList.toggle('open', state.brokerToolSubscribed);
 
       allChipBtn.classList.toggle('active', !state.mainChipSelected);
       mainChipBtn.classList.toggle('active', state.mainChipSelected);
@@ -1811,11 +2113,14 @@
 
       const stateSignal = document.getElementById('stateSignal');
       const stateSignalVisible = document.getElementById('stateSignalVisible');
+      const stateBrokerTool = document.getElementById('stateBrokerTool');
       const stateChip = document.getElementById('stateChip');
       stateSignal.textContent = state.signalSubscribed ? '主力信号已开通' : '主力信号未开通';
       stateSignal.classList.toggle('on', state.signalSubscribed);
       stateSignalVisible.textContent = state.signalVisible ? '信号已展示' : '信号未展示';
       stateSignalVisible.classList.toggle('on', state.signalVisible);
+      stateBrokerTool.textContent = state.brokerToolSubscribed ? (state.brokerToolVisible ? '券商信号工具已展示' : '券商信号工具已关闭') : '券商信号工具未开通';
+      stateBrokerTool.classList.toggle('on', state.brokerToolSubscribed);
       stateChip.textContent = state.chipSubscribed ? '主力筹码已开通' : '主力筹码未开通';
       stateChip.classList.toggle('on', state.chipSubscribed);
     }
@@ -1825,8 +2130,10 @@
       showFundDetail: () => showScreen('fundDetail'),
       showKline: () => showScreen('kline'),
       goSignalSign: () => showScreen('signalSign'),
+      goBrokerSign: () => showScreen('brokerSign'),
       goChipSign: () => showScreen('chipSign'),
       subscribeSignal,
+      subscribeBrokerTool,
       subscribeChip,
       openSettings,
       showMainChipDemo: () => {
@@ -1835,6 +2142,13 @@
       },
       closeSettings,
       toggleSignal,
+      toggleIndicatorMenu,
+      selectMa: () => selectIndicator('ma'),
+      selectBoll: () => selectIndicator('boll'),
+      selectSar: () => selectIndicator('sar'),
+      showBrokerToolEntry,
+      selectBrokerTool,
+      toggleBrokerTool,
       showSignalPop,
       showMainChip: selectMainChip,
       showAllChip: selectAllChip,
@@ -1843,7 +2157,13 @@
 
     document.addEventListener('click', event => {
       const target = event.target.closest('[data-action]');
-      if (!target) return;
+      if (!target) {
+        if (state.indicatorMenuOpen && !event.target.closest('#indicatorMenu') && !event.target.closest('#mainIndicator')) {
+          closeIndicatorMenu();
+          render();
+        }
+        return;
+      }
       const action = actions[target.dataset.action];
       if (action) action();
     });
