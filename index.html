@@ -1327,6 +1327,29 @@
       padding-bottom: 76px;
     }
 
+    .image-demo-page {
+      padding: 12px;
+    }
+
+    .image-demo-note {
+      margin-bottom: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: #fff7f0;
+      color: #6f4c20;
+      font-size: 12px;
+      line-height: 1.55;
+      font-weight: 700;
+    }
+
+    .image-demo-shot {
+      width: 100%;
+      display: block;
+      border-radius: 12px;
+      border: 1px solid #edf0f5;
+      box-shadow: 0 8px 18px rgba(24, 32, 48, .08);
+    }
+
     .fixed-action {
       position: absolute;
       left: 0;
@@ -1479,7 +1502,7 @@
               <div class="fund-module">
                 <div class="module-title">主力资金</div>
                 <div>主力资金净流入 <b style="color:var(--red)">+8206.1万</b>，净流入额市场排名 244/5528，占流通市值比例 0.36%。</div>
-                <button class="link-row" type="button" data-action="goSignalSign">查看近期主力信号 ›</button>
+                <button class="link-row" type="button" data-action="showFundDetail">查看资金详情 ›</button>
                 <div class="range-tabs"><span class="active">今日</span><span>5日</span><span>10日</span><span>20日</span></div>
                 <div class="mini-chart">
                   <svg viewBox="0 0 320 160" preserveAspectRatio="none">
@@ -1682,6 +1705,19 @@
           </div>
         </section>
 
+        <section class="screen" data-screen="fiveLevel">
+          <div class="status"><span>10:07</span><span>5G 68%</span></div>
+          <header class="appbar">
+            <button class="back" type="button" data-action="showKline">‹</button>
+            <div class="title">五档明细默认打开</div>
+            <button class="more" type="button">•••</button>
+          </header>
+          <div class="content image-demo-page">
+            <div class="image-demo-note">建议项：五档 / 明细作为交易用户高频看盘信息，可随行情工具条改造一并评估默认打开，减少用户展开成本；通过 A/B 观察 K 线停留、五档明细使用和交易转化。</div>
+            <img class="image-demo-shot" src="./assets/five-level-default.jpg" alt="五档明细默认打开示意">
+          </div>
+        </section>
+
         <section class="screen" data-screen="signalSign">
           <div class="status"><span>19:14</span><span>5G 98%</span></div>
           <header class="appbar">
@@ -1872,20 +1908,21 @@
 
     <aside class="side">
       <h1>交易工具商业化 Demo</h1>
-      <p>聚焦主力信号、主力筹码和券商 K 线信号工具融合：入口自然植入免费工具，签约由券商承接，付费价值回到 K 线和筹码场景展示。</p>
+      <p>本期优先验证行情工具条改造：将 K 线主图指标切换能力外露，承接已接入券商信号类工具，最快验证签约转化。主力资金先放二级详情页验证高意图入口；筹码和主力资金后续优先盘点券商现有能力，无现成能力再评估微证券侧计算脚本。</p>
 
       <div class="control-card">
         <div class="control-title">演示路径</div>
         <div class="control-grid">
-          <button type="button" data-action="showFundTab">资金 tab：查看近期主力信号</button>
-          <button type="button" data-action="showFundDetail">主力资金详情：查看主力信号</button>
-          <button type="button" data-action="goSignalSign">主力信号券商签约页</button>
-          <button type="button" data-action="subscribeSignal">签约成功：K线展示主力信号</button>
-          <button type="button" data-action="showBrokerToolEntry">K线主图指标：券商工具入口</button>
+          <button type="button" data-action="showBrokerToolEntry">行情工具条：主图指标切换外露</button>
           <button type="button" data-action="goBrokerSign">券商K线信号工具签约页</button>
           <button type="button" data-action="subscribeBrokerTool">签约成功：展示券商信号</button>
           <button type="button" data-action="openSettings">K线设置：信号工具管理</button>
-          <button type="button" data-action="showMainChipDemo">主力筹码：未开通态</button>
+          <button type="button" data-action="showFiveLevel">建议项：五档明细默认打开</button>
+          <button type="button" data-action="showFundTab">资金 tab：主力资金概览</button>
+          <button type="button" data-action="showFundDetail">主力资金详情：查看主力信号</button>
+          <button type="button" data-action="goSignalSign">主力信号券商签约页</button>
+          <button type="button" data-action="subscribeSignal">签约成功：K线展示主力信号</button>
+          <button type="button" data-action="showMainChipDemo">主力筹码：候选增强工具形态</button>
           <button type="button" data-action="goChipSign">主力筹码券商签约页</button>
           <button type="button" data-action="subscribeChip">签约成功：主力筹码已开通</button>
         </div>
@@ -2129,6 +2166,7 @@
       showFundTab: () => showScreen('fundTab'),
       showFundDetail: () => showScreen('fundDetail'),
       showKline: () => showScreen('kline'),
+      showFiveLevel: () => showScreen('fiveLevel'),
       goSignalSign: () => showScreen('signalSign'),
       goBrokerSign: () => showScreen('brokerSign'),
       goChipSign: () => showScreen('chipSign'),
