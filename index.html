@@ -518,6 +518,12 @@
       font-weight: 800;
     }
 
+    .indicator-menu-title + .indicator-menu-title {
+      margin-top: 6px;
+      padding-top: 8px;
+      border-top: 1px solid #eef1f6;
+    }
+
     .indicator-option {
       width: 100%;
       min-height: 34px;
@@ -543,6 +549,10 @@
     }
 
     .indicator-option.broker-option {
+      color: #303a49;
+    }
+
+    .indicator-option.broker-option.active {
       color: var(--red);
     }
 
@@ -554,6 +564,11 @@
       font-size: 10px;
       font-weight: 900;
       flex: 0 0 auto;
+    }
+
+    .mini-badge.open {
+      background: #eefbf4;
+      color: var(--green);
     }
 
     .broker-signal-layer {
@@ -1593,7 +1608,8 @@
                   <button class="indicator-option active" id="indicatorOptionMa" type="button" data-action="selectMa"><span>均线</span><span>✓</span></button>
                   <button class="indicator-option" id="indicatorOptionBoll" type="button" data-action="selectBoll"><span>BOLL</span></button>
                   <button class="indicator-option" id="indicatorOptionSar" type="button" data-action="selectSar"><span>SAR</span></button>
-                  <button class="indicator-option broker-option" id="indicatorOptionBroker" type="button" data-action="selectBrokerTool"><span>波段宝 · 中金专享</span><span class="mini-badge">专享</span></button>
+                  <div class="indicator-menu-title">信号叠加</div>
+                  <button class="indicator-option broker-option" id="indicatorOptionBroker" type="button" data-action="selectBrokerTool"><span>波段宝 · 中金专享</span><span class="mini-badge" id="brokerMenuBadge">专享</span></button>
                 </div>
                 <div class="k-chart">
                   <svg viewBox="0 0 260 360" preserveAspectRatio="none">
@@ -1789,23 +1805,23 @@
             <section class="sign-hero">
               <div class="broker"><span class="broker-logo">中</span> 中金财富提供服务</div>
               <div class="sign-title">券商 K 线信号工具</div>
-              <div class="sign-sub">接入微证券主图指标体系，开通后可在 K 线内切换查看</div>
+              <div class="sign-sub">接入微证券 K 线信号工具体系，开通后可与均线等主图指标叠加展示</div>
               <div class="benefit-grid">
                 <div class="benefit">券商服务<br>合规承接</div>
-                <div class="benefit">主图指标<br>轻量切换</div>
+                <div class="benefit">信号叠加<br>不挡看盘</div>
                 <div class="benefit">信号展示<br>随时关闭</div>
               </div>
             </section>
             <section class="card">
               <div class="sign-card-title">统一入口接入方式</div>
               <ul class="feature-list">
-                <li>微证券在 K 线主图上方提供“主图指标切换”入口，免费指标与券商信号类工具统一管理。</li>
-                <li>用户选择券商专享指标后进入对应券商签约页，服务、协议、付费和风险揭示由券商承接。</li>
-                <li>签约后回到 K 线展示对应信号；具体指标样式以券商服务为准，微证券只负责入口与场景融合。</li>
+                <li>微证券在 K 线主图上方提供“主图指标 + 信号叠加”入口，免费指标与券商信号工具统一管理。</li>
+                <li>用户选择券商专享信号工具后进入对应券商签约页，服务、协议、付费和风险揭示由券商承接。</li>
+                <li>签约后回到 K 线叠加展示对应信号，不影响均线、BOLL 等主图指标；具体样式以券商服务为准。</li>
               </ul>
               <div class="effect-preview">
                 <div class="signal-demo-art">
-                  <div class="signal-demo-title">主图指标统一切换</div>
+                  <div class="signal-demo-title">主图指标 + 信号叠加</div>
                   <div class="signal-mini-chart">
                     <div style="position:absolute;left:12px;right:12px;top:10px;display:flex;gap:6px;align-items:center;font-size:12px;color:#5b6474;">
                       <span style="padding:4px 7px;border-radius:5px;background:#f4f6fa;color:#303a49;font-weight:900;">均线 ▼</span>
@@ -1826,11 +1842,11 @@
                     <span class="mini-signal green" style="left:198px;top:78px;">卖</span>
                   </div>
                 </div>
-                <div class="effect-caption">效果示意：入口统一，信号样式由券商服务决定。</div>
+                <div class="effect-caption">效果示意：均线等主图指标保留，券商信号作为叠加层展示。</div>
               </div>
             </section>
             <section class="card risk">
-              本页为券商信号类工具接入示意。服务由签约券商提供，微证券提供入口和场景承接；具体服务名称、展示样式、协议和风险揭示以券商页面为准。
+              本页为券商信号类工具接入示意。服务由签约券商提供，微证券提供入口和场景承接；信号可与主图指标叠加展示，具体服务名称、展示样式、协议和风险揭示以券商页面为准。
             </section>
           </div>
           <div class="fixed-action">
@@ -1908,12 +1924,12 @@
 
     <aside class="side">
       <h1>交易工具商业化 Demo</h1>
-      <p>本期优先验证行情工具条改造：将 K 线主图指标切换能力外露，承接已接入券商信号类工具，最快验证签约转化。主力资金先放二级详情页验证高意图入口；筹码和主力资金后续优先盘点券商现有能力，无现成能力再评估微证券侧计算脚本。</p>
+      <p>本期优先验证行情工具条改造：将 K 线主图指标切换能力外露，并提供券商信号叠加入口，最快承接已接入券商工具、验证签约转化。主力资金先放二级详情页验证高意图入口；筹码和主力资金后续优先盘点券商现有能力，无现成能力再评估微证券侧计算脚本。</p>
 
       <div class="control-card">
         <div class="control-title">演示路径</div>
         <div class="control-grid">
-          <button type="button" data-action="showBrokerToolEntry">行情工具条：主图指标切换外露</button>
+          <button type="button" data-action="showBrokerToolEntry">行情工具条：主图指标 + 信号叠加</button>
           <button type="button" data-action="goBrokerSign">券商K线信号工具签约页</button>
           <button type="button" data-action="subscribeBrokerTool">签约成功：展示券商信号</button>
           <button type="button" data-action="openSettings">K线设置：信号工具管理</button>
@@ -1978,6 +1994,7 @@
     const brokerToolCard = document.getElementById('brokerToolCard');
     const brokerToolStatus = document.getElementById('brokerToolStatus');
     const brokerBadge = document.getElementById('brokerBadge');
+    const brokerMenuBadge = document.getElementById('brokerMenuBadge');
     const chipPaywall = document.getElementById('chipPaywall');
     const chipData = document.getElementById('chipData');
     const allChipBtn = document.getElementById('allChipBtn');
@@ -2051,7 +2068,6 @@
     function selectIndicator(type) {
       state.indicatorMenuOpen = false;
       state.indicatorType = type;
-      state.brokerToolVisible = type === 'broker';
       render();
     }
 
@@ -2061,13 +2077,13 @@
         showScreen('brokerSign');
         return;
       }
-      selectIndicator('broker');
+      state.brokerToolVisible = !state.brokerToolVisible;
+      render();
     }
 
     function showBrokerToolEntry() {
       showScreen('kline');
       state.indicatorType = 'ma';
-      state.brokerToolVisible = false;
       state.indicatorMenuOpen = true;
       render();
     }
@@ -2075,7 +2091,6 @@
     function subscribeBrokerTool() {
       state.brokerToolSubscribed = true;
       state.brokerToolVisible = true;
-      state.indicatorType = 'broker';
       showScreen('kline');
     }
 
@@ -2085,7 +2100,6 @@
         return;
       }
       state.brokerToolVisible = !state.brokerToolVisible;
-      state.indicatorType = state.brokerToolVisible ? 'broker' : 'ma';
       render();
     }
 
@@ -2116,19 +2130,20 @@
       const indicatorText = {
         ma: { name: '均线', values: 'MA5:54.04　MA10:49.20　MA20:47.70　MA30:48.99' },
         boll: { name: 'BOLL', values: 'MID:47.70　UP:57.21　LOW:38.42' },
-        sar: { name: 'SAR', values: 'SAR:48.26　趋势:上行' },
-        broker: { name: '波段宝', values: '上升波段延续　中金财富提供服务' }
+        sar: { name: 'SAR', values: 'SAR:48.26　趋势:上行' }
       };
       const currentIndicator = indicatorText[state.indicatorType] || indicatorText.ma;
       indicatorMenu.classList.toggle('show', state.indicatorMenuOpen);
       indicatorName.textContent = currentIndicator.name;
       indicatorValues.textContent = currentIndicator.values;
-      indicatorValues.classList.toggle('broker', state.indicatorType === 'broker');
+      indicatorValues.classList.remove('broker');
       indicatorOptionMa.classList.toggle('active', state.indicatorType === 'ma');
       indicatorOptionBoll.classList.toggle('active', state.indicatorType === 'boll');
       indicatorOptionSar.classList.toggle('active', state.indicatorType === 'sar');
-      indicatorOptionBroker.classList.toggle('active', state.indicatorType === 'broker');
-      brokerSignalLayer.classList.toggle('show', state.brokerToolSubscribed && state.brokerToolVisible && state.indicatorType === 'broker');
+      indicatorOptionBroker.classList.toggle('active', state.brokerToolSubscribed && state.brokerToolVisible);
+      brokerMenuBadge.textContent = state.brokerToolSubscribed ? (state.brokerToolVisible ? '已开启' : '已关闭') : '专享';
+      brokerMenuBadge.classList.toggle('open', state.brokerToolSubscribed);
+      brokerSignalLayer.classList.toggle('show', state.brokerToolSubscribed && state.brokerToolVisible);
       brokerToolCard.classList.toggle('active', state.brokerToolSubscribed && state.brokerToolVisible);
       brokerToolStatus.textContent = state.brokerToolSubscribed ? (state.brokerToolVisible ? '已开启' : '已关闭') : '中金财富专享';
       brokerBadge.textContent = state.brokerToolSubscribed ? '已开通' : '专享';
